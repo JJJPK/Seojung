@@ -12,6 +12,10 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: #ffffff;
       user-select: none;
+      transition: background 0.8s ease;
+    }
+    body.fart-mode {
+      background: radial-gradient(circle at center, #1f2408 0%, #060801 100%);
     }
     #ui-container {
       position: absolute;
@@ -21,22 +25,29 @@
       pointer-events: none;
       z-index: 10;
     }
-    .title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #ff99bb;
-      text-shadow: 0 0 15px rgba(255, 51, 119, 0.7);
-      margin-bottom: 8px;
+    #toggle-btn {
+      pointer-events: auto;
+      background: linear-gradient(135deg, #ff2266, #ff6699);
+      color: #ffffff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 34, 102, 0.6);
+      transition: transform 0.2s ease, background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
     }
-    .subtitle {
-      font-size: 0.95rem;
-      color: #ccaabb;
-      opacity: 0.85;
+    #toggle-btn:hover {
+      transform: scale(1.06);
     }
-    .hint {
-      margin-top: 15px;
-      font-size: 0.8rem;
-      color: #886677;
+    #toggle-btn:active {
+      transform: scale(0.95);
+    }
+    body.fart-mode #toggle-btn {
+      background: linear-gradient(135deg, #99cc00, #ffcc00);
+      color: #1a2200;
+      box-shadow: 0 0 25px rgba(180, 255, 0, 0.7);
     }
   </style>
   <!-- Three.js 및 애드온 로드용 Import Map -->
@@ -51,175 +62,7 @@
 </head>
 <body>
   <div id="ui-container">
-    <!-- 원하는 이름이나 메시지로 수정 가능 -->
+    <button id="toggle-btn">방구 모드로 변신 💨</button>
   </div>
 
   <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-
-    // 1. 씬, 카메라, 렌더러 초기화
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 42);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    document.body.appendChild(renderer.domElement);
-
-    // 2. 마우스/터치 컨트롤 설정
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.5;
-
-    // 3. 조명 설정
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
-
-    const pointLight1 = new THREE.PointLight(0xff3377, 4, 100);
-    pointLight1.position.set(20, 20, 20);
-    scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0x7733ff, 3, 100);
-    pointLight2.position.set(-20, -20, -20);
-    scene.add(pointLight2);
-
-    // 4. 텍스트 스프라이트 생성 함수 (한글/특수문자 완벽 지원)
-    function createTextTexture(text, color) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = 256;
-      canvas.height = 128;
-      ctx.font = 'bold 44px sans-serif';
-      ctx.fillStyle = color;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 12;
-      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    // 5. 수식 기반 3D 하트 텍스트 클라우드 구성
-    const heartGroup = new THREE.Group();
-    scene.add(heartGroup);
-
-    // 표시할 텍스트 목록 (여기에 여자친구 이름이나 애칭을 추가해도 됨)
-    const words = ['사랑해', '빵구쟁이', '♥', '>3<', '뿡'];
-    const colors = ['#ff2266', '#ff6699', '#ff99bb', '#ffffff', '#ff3388'];
-    
-    const materials = [];
-    words.forEach((word, i) => {
-      const texture = createTextTexture(word, colors[i % colors.length]);
-      materials.push(new THREE.SpriteMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 0.85,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      }));
-    });
-
-    const particleCount = 650;
-    const sprites = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      const t = Math.random() * Math.PI * 2;
-      const p = Math.random() * Math.PI;
-
-      // 3D 하트 곡면 수식
-      const x = 16 * Math.pow(Math.sin(t), 3) * Math.sin(p);
-      const y = (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * Math.sin(p);
-      const z = 6 * Math.cos(p);
-
-      const material = materials[i % materials.length];
-      const sprite = new THREE.Sprite(material);
-
-      const scaleFactor = 0.85;
-      sprite.position.set(x * scaleFactor, y * scaleFactor, z * scaleFactor);
-      sprite.scale.set(3.2, 1.6, 1);
-
-      sprite.userData = {
-        basePos: sprite.position.clone(),
-        phase: Math.random() * Math.PI * 2
-      };
-
-      heartGroup.add(sprite);
-      sprites.push(sprite);
-    }
-
-    // 6. 중앙 3D 입체 폴리곤 텍스트 ("I LOVE YOU") 생성
-    let centerMesh = null;
-    const fontLoader = new FontLoader();
-    fontLoader.load('https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', (font) => {
-      const textGeo = new TextGeometry('I LOVE YOU', {
-        font: font,
-        size: 2.2,
-        height: 0.6,
-        curveSegments: 12,
-        bevelEnabled: true,
-        bevelThickness: 0.15,
-        bevelSize: 0.08,
-        bevelOffset: 0,
-        bevelSegments: 5
-      });
-      textGeo.center();
-
-      const textMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        emissive: 0xff1155,
-        emissiveIntensity: 0.5,
-        roughness: 0.2,
-        metalness: 0.8
-      });
-
-      centerMesh = new THREE.Mesh(textGeo, textMat);
-      scene.add(centerMesh);
-    });
-
-    // 7. 클릭/터치 시 심장 박동(Pulse) 인터랙션
-    let pulseBoost = 0;
-    window.addEventListener('pointerdown', () => {
-      pulseBoost = 0.35;
-    });
-
-    // 8. 애니메이션 루프
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
-
-      // 기본 두근거림 + 클릭 시 부스트 감쇠
-      pulseBoost *= 0.92;
-      const heartbeat = 1 + 0.05 * Math.sin(elapsedTime * 3.5) + pulseBoost;
-      heartGroup.scale.set(heartbeat, heartbeat, heartbeat);
-
-      // 개별 텍스트 스프라이트 미세 움직임
-      sprites.forEach((sprite) => {
-        const { basePos, phase } = sprite.userData;
-        sprite.position.y = basePos.y + Math.sin(elapsedTime * 2 + phase) * 0.25;
-      });
-
-      if (centerMesh) {
-        centerMesh.rotation.y = Math.sin(elapsedTime * 0.8) * 0.25;
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // 9. 반응형 화면 크기 조절
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
-</body>
-</html>
