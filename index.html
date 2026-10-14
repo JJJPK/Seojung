@@ -1,68 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy I Love You Day</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: radial-gradient(circle at center, #1a0510 0%, #050104 100%);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff;
-      user-select: none;
-      transition: background 0.8s ease;
-    }
-    body.fart-mode {
-      background: radial-gradient(circle at center, #1f2408 0%, #060801 100%);
-    }
-    #ui-container {
-      position: absolute;
-      bottom: 40px;
-      width: 100%;
-      text-align: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-    #toggle-btn {
-      pointer-events: auto;
-      background: linear-gradient(135deg, #ff2266, #ff6699);
-      color: #ffffff;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 34, 102, 0.6);
-      transition: transform 0.2s ease, background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
-    }
-    #toggle-btn:hover {
-      transform: scale(1.06);
-    }
-    #toggle-btn:active {
-      transform: scale(0.95);
-    }
-    body.fart-mode #toggle-btn {
-      background: linear-gradient(135deg, #99cc00, #ffcc00);
-      color: #1a2200;
-      box-shadow: 0 0 25px rgba(180, 255, 0, 0.7);
-    }
-  </style>
-  <!-- Three.js 및 애드온 로드용 Import Map -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
-</head>
-<body>
-  <div id="ui-container">
-    <button id="toggle-btn">방구 모드로 변신 💨</button>
-  </div>
-
-  <script type="module">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy I Love You Day</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #050104;
+  background-image: radial-gradient(circle at center, #1a0510 0%, #050104 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+  user-select: none;
+  transition: background 0.8s ease;
+}
+body.fart-mode {
+  background-color: #060801;
+  background-image: radial-gradient(circle at center, #1f2408 0%, #060801 100%);
+}
+#ui-container {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+#toggle-btn {
+  pointer-events: auto;
+  background: linear-gradient(135deg, #ff2266, #ff6699);
+  color: #ffffff;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1.05rem;
+  font-weight: 70
